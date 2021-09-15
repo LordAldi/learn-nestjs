@@ -1,8 +1,10 @@
 import { Exclude } from 'class-transformer';
+import Post from 'src/posts/entity/post.entity';
 import {
   Column,
   Entity,
   JoinColumn,
+  OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
@@ -29,6 +31,9 @@ class User {
   })
   @JoinColumn()
   public address: Address;
+
+  @OneToMany(() => Post, (post: Post) => post.author)
+  public posts: Post[];
 }
 
 export default User;
