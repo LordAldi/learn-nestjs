@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import User from 'src/users/entities/user.entity';
 import { Repository } from 'typeorm';
@@ -24,12 +24,12 @@ export class PostsService {
   }
 
   async findAll() {
-    return this.postsRepository.find({ relations: ['author'] });
+    return this.postsRepository.find({ relations: ['author', 'categories'] });
   }
 
   async findOne(id: number) {
     const post = await this.postsRepository.findOne(id, {
-      relations: ['author'],
+      relations: ['author', 'categories'],
     });
     if (post) {
       return post;
@@ -40,7 +40,7 @@ export class PostsService {
   async update(id: number, updatePostDto: UpdatePostDto) {
     await this.postsRepository.update(id, updatePostDto);
     const updatedPost = await this.postsRepository.findOne(id, {
-      relations: ['author'],
+      relations: ['author', 'categories'],
     });
     if (updatedPost) {
       return updatedPost;
