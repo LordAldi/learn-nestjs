@@ -10,6 +10,7 @@ import {
   Req,
   UseInterceptors,
   ClassSerializerInterceptor,
+  Query,
 } from '@nestjs/common';
 import { PostsService } from './posts.service';
 import { CreatePostDto } from './dto/create-post.dto';
@@ -30,7 +31,10 @@ export class PostsController {
   }
 
   @Get()
-  findAll() {
+  findAll(@Query('search') search: string) {
+    if (search) {
+      return this.postsService.searchForPosts(search);
+    }
     return this.postsService.findAll();
   }
 

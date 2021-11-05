@@ -9,6 +9,7 @@ import { APP_FILTER } from '@nestjs/core';
 import { ExceptionsLoggerFilter } from './utils/exceptionsLogger.filter';
 import { HttpExceptionFilter } from './utils/httpExceptions.filter';
 import { CategoriesModule } from './categories/categories.module';
+import { SearchModule } from './search/search.module';
 
 @Module({
   imports: [
@@ -29,12 +30,16 @@ import { CategoriesModule } from './categories/categories.module';
         AWS_ACCESS_KEY_ID: Joi.string().required(),
         AWS_SECRET_ACCESS_KEY: Joi.string().required(),
         AWS_PUBLIC_BUCKET_NAME: Joi.string().required(),
+        ELASTICSEARCH_NODE: Joi.string(),
+        ELASTICSEARCH_USERNAME: Joi.string(),
+        ELASTICSEARCH_PASSWORD: Joi.string(),
       }),
     }),
     DatabaseModule,
     AuthenticationModule,
     UsersModule,
     CategoriesModule,
+    SearchModule,
   ],
   controllers: [],
   providers: [
