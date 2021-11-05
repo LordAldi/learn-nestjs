@@ -70,4 +70,10 @@ export class PostsService {
     }
     await this.postsSearchService.remove(id);
   }
+  async getPostsWithParagraph(paragraph: string) {
+    return this.postsRepository.query(
+      'SELECT * from post WHERE $1 = ANY(paragraphs)',
+      [paragraph],
+    );
+  }
 }
