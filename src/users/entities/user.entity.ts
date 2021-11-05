@@ -1,4 +1,5 @@
 import { Exclude } from 'class-transformer';
+import PublicFile from 'src/files/publicFile.entity';
 import Post from 'src/posts/entity/post.entity';
 import {
   Column,
@@ -39,7 +40,14 @@ class User {
   public address: Address;
 
   @OneToMany(() => Post, (post: Post) => post.author)
-  public posts: Post[];
+  public posts?: Post[];
+
+  @JoinColumn()
+  @OneToOne(() => PublicFile, {
+    eager: true,
+    nullable: true,
+  })
+  public avatar?: PublicFile;
 }
 
 export default User;

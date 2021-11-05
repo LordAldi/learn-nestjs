@@ -1,7 +1,7 @@
 import { Test } from '@nestjs/testing';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
-import { AuthenticationService } from './authentication.service';
+import { AuthenticationService } from '../authentication.service';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import User from 'src/users/entities/user.entity';
 import { UsersService } from 'src/users/users.service';
@@ -33,6 +33,7 @@ describe('The AuthenticationService', () => {
       AuthenticationService,
     );
   });
+
   describe('when creating a cookie', () => {
     it('should return a string', () => {
       const userId = 1;
