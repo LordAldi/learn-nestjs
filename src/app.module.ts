@@ -10,6 +10,7 @@ import { ExceptionsLoggerFilter } from './utils/exceptionsLogger.filter';
 import { HttpExceptionFilter } from './utils/httpExceptions.filter';
 import { CategoriesModule } from './categories/categories.module';
 import { SearchModule } from './search/search.module';
+import { SubscribersModule } from './subscribers/subscribers.module';
 
 @Module({
   imports: [
@@ -33,6 +34,8 @@ import { SearchModule } from './search/search.module';
         ELASTICSEARCH_NODE: Joi.string(),
         ELASTICSEARCH_USERNAME: Joi.string(),
         ELASTICSEARCH_PASSWORD: Joi.string(),
+        SUBSCRIBERS_SERVICE_HOST: Joi.string(),
+        SUBSCRIBERS_SERVICE_PORT: Joi.string(),
       }),
     }),
     DatabaseModule,
@@ -40,6 +43,7 @@ import { SearchModule } from './search/search.module';
     UsersModule,
     CategoriesModule,
     SearchModule,
+    SubscribersModule,
   ],
   controllers: [],
   providers: [
