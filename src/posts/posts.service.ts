@@ -1,9 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import User from 'src/users/entities/user.entity';
-import { In, Repository } from 'typeorm';
+import { FindManyOptions, In, MoreThan, Repository } from 'typeorm';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
+import Post from './entity/post.entity';
 import PostEntity from './entity/post.entity';
 import PostNotFoundException from './exception/postNotFund.exception';
 import PostsSearchService from './postsSearch.service';
@@ -26,8 +27,27 @@ export class PostsService {
     return newPost;
   }
 
-  async findAll() {
-    return this.postsRepository.find({ relations: ['author', 'categories'] });
+  async findAll(offset?: number, limit?: number, startId?: number) {
+    const where: FindManyOptions<Post>['where'] = {};
+    let separateCount = 0;
+    if (startId) {
+      where.id = MoreThan(startId);
+      separateCount = await this.postsRepository.count();
+    }
+    const [items, count] = await this.postsRepository.findAndCount({
+      where,
+      relations: ['author'],
+      order: {
+        id: 'ASC',
+      },
+      skip: offset,
+      take: limit,
+    });
+
+    return {
+      items,
+      count: startId ? separateCount : count,
+    };
   }
 
   async findOne(id: number) {
@@ -40,15 +60,32 @@ export class PostsService {
     throw new PostNotFoundException(id);
   }
 
-  async searchForPosts(text: string) {
-    const results = await this.postsSearchService.search(text);
+  async searchForPosts(
+    text: string,
+    offset?: number,
+    limit?: number,
+    startId?: number,
+  ) {
+    const { results, count } = await this.postsSearchService.search(
+      text,
+      offset,
+      limit,
+      startId,
+    );
     const ids = results.map((result) => result.id);
     if (!ids.length) {
-      return [];
+      return {
+        items: [] as any[],
+        count,
+      };
     }
-    return this.postsRepository.find({
+    const items = await this.postsRepository.find({
       where: { id: In(ids) },
     });
+    return {
+      items,
+      count,
+    };
   }
 
   async update(id: number, updatePostDto: UpdatePostDto) {

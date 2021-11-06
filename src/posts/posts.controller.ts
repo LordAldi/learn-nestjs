@@ -18,6 +18,7 @@ import { UpdatePostDto } from './dto/update-post.dto';
 import JwtAuthenticationGuard from 'src/authentication/jwt-authentication.guard';
 import FindOneParams from 'src/utils/findOneParams';
 import RequestWithUser from 'src/authentication/interface/requestWithUser.interface';
+import { PaginationParams } from 'src/utils/types/paginationParams';
 
 @Controller('posts')
 @UseInterceptors(ClassSerializerInterceptor)
@@ -31,11 +32,14 @@ export class PostsController {
   }
 
   @Get()
-  findAll(@Query('search') search: string) {
+  findAll(
+    @Query('search') search: string,
+    @Query() { offset, limit, startId }: PaginationParams,
+  ) {
     if (search) {
-      return this.postsService.searchForPosts(search);
+      return this.postsService.searchForPosts(search, offset, limit, startId);
     }
-    return this.postsService.findAll();
+    return this.postsService.findAll(offset, limit, startId);
   }
 
   @Get(':id')
